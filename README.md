@@ -7,60 +7,139 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## TeaTales+ (Platform Berbagi Cerita Reflektif)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+TeaTales+ adalah sebuah platform komunitas berbasis web yang dirancang sebagai ruang aman dan nyaman bagi pengguna untuk mempublikasikan, membaca, dan berinteraksi dengan tulisan-tulisan reflektif, kutipan inspiratif, dan cerita kehidupan yang bermakna. Mengusung konsep Medium-lite, aplikasi ini fokus pada pengalaman membaca yang bersih dan interaksi yang positif.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## FITUR UTAMA
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Fitur Publik (Frontend)
+- Landing Page Dinamis: Menampilkan kutipan acak (Random Quote) dan navigasi responsif.
+- Explore & Search: Jelajahi cerita berdasarkan kategori atau cari topik spesifik secara real-time.
+- Baca Cerita (Story Detail): Tampilan artikel yang nyaman dengan estimasi waktu baca dan view counter.
+- Interaksi Pengguna:
+  Like: Apresiasi tulisan favorit.
+  Komentar: Diskusi interaktif di setiap cerita.
+  Favorite/Bookmark: Simpan cerita untuk dibaca nanti.
+  Re-share: Bagikan ulang postingan menarik ke profil sendiri (seperti Retweet).
+  Share: Salin tautan untuk membagikan ke media sosial eksternal.
+- Profil Pengguna: Halaman profil personal dengan tab Postingan Asli, Re-share, dan Bio.
+- Follow System: Ikuti penulis favorit agar tidak ketinggalan cerita terbaru mereka.
 
-## Learning Laravel
+Fitur Member (Penulis)
+- Tulis Cerita: Editor teks kaya (Rich Text Editor via CKEditor) untuk menulis cerita panjang.
+- Draft & Auto-Save: Tulisan otomatis tersimpan sebagai draf sebelum dipublikasikan.
+- Manajemen Profil: Edit foto profil, nama, dan bio.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Fitur Admin (Backend)
+- Dashboard Eksklusif (Filament V3): Panel admin modern dan responsif.
+- Moderasi Konten: Hapus atau sembunyikan postingan yang melanggar aturan.
+- Manajemen Pengguna: Lihat daftar pengguna, blokir akun, atau ubah peran (role).
+- Manajemen Kategori & Quotes: Tambah/Edit/Hapus kategori cerita dan kutipan harian.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Teknologi yang Digunakan
+Aplikasi ini dibangun dengan arsitektur Monolith Modern menggunakan ekosistem Laravel terbaru:
+- Backend Framework: Laravel 12
+- Frontend Interactivity: Laravel Livewire 3
+- Styling: Tailwind CSS
+- Admin Panel: Filament V3
+- Authentication: Laravel Breeze
+- Database: MySQL 8.0+
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Cara Instalasi (Local Development)
+Ikuti langkah-langkah ini untuk menjalankan proyek di komputer lokal Anda.
 
-## Laravel Sponsors
+PRASYARAT
+Pastikan Anda sudah menginstal:
+- PHP >= 8.2
+- Composer
+- Node.js & NPM
+- MySQL / MariaDB
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Langkah-langkah
+- Clone Repositori
+  git clone [https://github.com/username-anda/teatales.git](https://github.com/username-anda/teatales.git)
+  cd teatales
 
-### Premium Partners
+- Install Dependensi PHP & JS
+  composer install
+  npm install
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- Setup Environment
+  Salin file .env.example menjadi .env:
+      cp .env.example .env
 
-## Contributing
+  Buka file .env dan sesuaikan konfigurasi database Anda:
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=db_teatales
+    DB_USERNAME=root
+    DB_PASSWORD=
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Generate App Key
+  php artisan key:generate
 
-## Code of Conduct
+- Setup Storage Link (Wajib agar gambar profil/postingan muncul)
+  php artisan storage:link
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- Migrasi Database & Seeder
+  Jalankan migrasi dan isi data awal (termasuk akun Admin):
+    php artisan migrate:fresh --seed
 
-## Security Vulnerabilities
+  Jalankan Aplikasi
+  Buka dua terminal terpisah:
+    Terminal 1 (Jalankan Vite untuk aset frontend):
+    npm run dev
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    Terminal 2 (Jalankan Server Laravel):
+    php artisan serve
 
-## License
+- Akses Aplikasi
+  Frontend (User): Buka http://127.0.0.1:8000
+  Backend (Admin): Buka http://127.0.0.1:8000/admin
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Akun Demo (Default Seeder)
+
+Jika Anda menjalankan php artisan db:seed, gunakan akun berikut untuk login:
+- Role
+  Admin
+
+      Email
+      adminteatales@gmail.com
+
+      Password
+      password
+
+- User Biasa
+(Daftar sendiri via Register)
+
+(Password Sesuai input)
+
+
+## Struktur Folder Penting
+
+app/Filament/Resources : Logika CRUD Admin Panel (Post, User, Category).
+
+app/Livewire : Logika komponen interaktif (LikeButton, PostForm, dll).
+
+resources/views/livewire : Tampilan (View) komponen Livewire.
+
+resources/views/welcome.blade.php : Landing Page utama.
+
+routes/web.php : Definisi rute aplikasi web.
+
+
+## Kontribusi
+
+Proyek ini dikembangkan untuk tujuan pembelajaran. Jika Anda ingin berkontribusi:
+
+Fork repositori ini.
+
+Buat branch fitur baru (git checkout -b fitur-keren).
+
+Commit perubahan Anda (git commit -m 'Menambahkan fitur keren').
+
+Push ke branch (git push origin fitur-keren).
+
+Buat Pull Request.
