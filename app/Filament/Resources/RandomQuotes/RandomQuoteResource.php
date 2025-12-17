@@ -2,50 +2,45 @@
 
 namespace App\Filament\Resources\RandomQuotes;
 
-use App\Filament\Resources\RandomQuotes\Pages;
+use App\Filament\Resources\RandomQuotes\Pages; 
 use App\Models\RandomQuote;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
-use Filament\Tables\Columns\TextColumn;
+use Illuminate\Support\Facades\Auth;
 
 class RandomQuoteResource extends Resource
 {
     protected static ?string $model = RandomQuote::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-bottom-center-text';
-
+    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
+    protected static ?string $navigationLabel = 'Quotes';
     protected static ?string $navigationGroup = 'Manajemen Konten';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make('Detail Kutipan')->schema([
-                    
-                    Select::make('user_id')
-                        ->relationship('user', 'name')
-                        ->searchable()
-                        ->preload()
-                        ->required()
-                        ->label('Pemilik Kutipan'),
+                Forms\Components\Section::make() 
+                    ->schema([
+                        Forms\Components\Hidden::make('user_id')
+                            ->default(fn () => Auth::id())
+                            ->required(),
 
-                    TextInput::make('title')
-                        ->label('Judul (Opsional)')
-                        ->maxLength(255),
+                        Forms\Components\TextInput::make('title')
+                            ->label('Penulis / Judul')
+                            ->placeholder('Contoh: Steve Jobs')
+                            ->required()
+                            ->maxLength(255),
 
-                    Textarea::make('content')
-                        ->label('Isi Kutipan')
-                        ->required()
-                        ->columnSpan('full'), 
-                        
-                ])->columns(1),
+                        Forms\Components\Textarea::make('content')
+                            ->label('Isi Quote')
+                            ->rows(4)
+                            ->required()
+                            ->columnSpanFull(),
+                    ])
             ]);
     }
 
@@ -53,26 +48,17 @@ class RandomQuoteResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('user.name')
-                    ->label('Pemilik')
-                    ->sortable()
+                Tables\Columns\TextColumn::make('title')
+                    ->label('Penulis')
                     ->searchable(),
+                
+                Tables\Columns\TextColumn::make('content')
+                    ->label('Isi Quote')
+                    ->limit(50),
 
-                TextColumn::make('title')
-                    ->label('Judul')
-                    ->searchable()
-                    ->placeholder('- Tanpa Judul -'),
-
-                TextColumn::make('content')
-                    ->label('Isi')
-                    ->limit(50)
-                    ->searchable(),
-
-                TextColumn::make('created_at')
-                    ->label('Dibuat Pada')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime('d M Y')
+                    ->sortable(),
             ])
             ->filters([
                 //

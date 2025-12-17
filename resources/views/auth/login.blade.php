@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <title>Cute Lamp 💡 with Sign Up Form</title>
         <style>
             *,
@@ -295,6 +296,33 @@
             .top__body {
                 fill: var(--t-3);
             }
+
+            .password-wrapper {
+                position: relative;
+                width: 100%;
+            }
+
+            .password-wrapper input {
+                width: 100%;
+                padding-right: 40px;
+            }
+
+            .password-wrapper i {
+                position: absolute;
+                right: 15px;
+                top: 50%;
+                transform: translateY(-50%); 
+                cursor: pointer;
+                color: rgba(255, 255, 255, 0.7); 
+                z-index: 10;
+            }
+
+            .password-wrapper i:hover {
+                color: #fff;
+            }
+
+            .input-error { border-color: #ff8a80 !important; background: rgba(255, 69, 58, 0.1) !important; }
+            .error-message { display: block; color: #ff8a80; font-size: 0.85rem; margin-top: 0.4rem; font-weight: 500; text-align: left; }
         </style>
     </head>
     <body>
@@ -592,18 +620,22 @@
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            placeholder="Enter your password"
-                            required name="password"
-                        />
+                        <div class="password-wrapper">
+                            <input
+                                type="password"
+                                id="password"
+                                placeholder="Enter your password"
+                                required
+                                name="password"
+                            />
+                            <i class="fa-solid fa-eye" id="togglePassword"></i>
+                        </div>
                     </div>
                     <button type="submit" class="login-btn">
                         {{ __('Login') }}
                     </button>
                     <div class="form-footer">
-                        <p class="loggin">Don't have account? <a href="signUp.html" class="textloggin">Sign Up</a></p>
+                        <p class="loggin">Don't have account? <a href="{{ route('register') }}" class="textloggin">Register</a></p>
                     </div>
                 </form>
             </div>
@@ -749,6 +781,18 @@
             });
 
             gsap.set(".lamp", { display: "block" });
+
+            const togglePassword = document.querySelector("#togglePassword");
+            const passwordInput = document.querySelector("#password");
+
+            if (togglePassword && passwordInput) {
+                togglePassword.addEventListener("click", function () {
+                    const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+                    passwordInput.setAttribute("type", type);
+                    
+                    this.classList.toggle("fa-eye-slash");
+                });
+            }
         </script>
     </body>
 </html>

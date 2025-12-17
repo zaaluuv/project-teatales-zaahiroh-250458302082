@@ -1,65 +1,4 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TeaTales+</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">   
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-</head>
-<body>
-
-<!-- NAVBAR & HERO -->
-    <nav class="sticky top-0 z-50 bg-white w-full mx-auto px-6 py-4 flex justify-between items-center">
-        <div class="text-2xl font-bold text-teal-700">☕︎ <span class="text-black">TeaTales+</span></div>
-            <div class="hidden md:flex space-x-6 items-center text-gray-700">
-                <a href="#home" class="hover:text-teal-600 font-medium">Home</a>
-                <a href="#community" class="hover:text-teal-600">Community</a>
-                <a href="#explore" class="hover:text-teal-600">Explore</a>
-                <a href="#about" class="hover:text-teal-600">About</a>
-            </div>
-            
-        <div class="flex items-center gap-2">
-            @guest
-                <div class="hidden md:flex items-center gap-2">
-                    <button class="bg-teal-600 h-8 text-white px-6 py-3 rounded-full font-semibold shadow hover:bg-teal-700 transition-colors flex justify-center items-center">Login</button>
-                    <button class="bg-orange-300 h-8 text-white px-6 py-3 rounded-full font-semibold shadow hover:bg-orange-600 transition-colors flex justify-center items-center">Register</button>
-                </div>
-            @endguest
-            
-            <!-- kalau udh login -->
-            @auth
-                <div class="relative" x-data="{ open: false }">
-
-                    <button @click="open = !open" class="w-8 h-8 rounded-full overflow-hidden border-2 border-teal-900 block">
-                        <img src="{{ asset('storage/' . $user->profile_photo) }}" alt="User avatar">
-                    </button>
-
-                    <div id="user-menu-dropdown" x-show="open" @click.outside="open = false" class="absolute right-0 mt-2 w-48 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-base-900 focus:outline-hidden z-10">
-                        <div class="py-1">
-                            <a href="profile.html" class="block px-4 py-2 text-black hover:bg-gray-200">Your Profile</a>
-
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <a href="{{ route('logout') }}" 
-                                onclick="event.preventDefault(); this.closest('form').submit();" 
-                                class="block px-4 py-2 text-black hover:bg-gray-200">
-                                    Log Out
-                                </a>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            @endauth
-
-            
-        </div>
-    </nav>
-
+<x-app-layout>
     <div id="home" class="bg-teal-50/70 pt-1 pb-16">
         <header class="container mx-auto px-6 mt-16 flex flex-col lg:flex-row items-center gap-12">
             <div class="lg:w-1/2">
@@ -69,239 +8,214 @@
                 <p class="text-gray-600 text-lg mb-8">
                     Discover wonderful stories from creators around the world, or share your own thoughts with our community.
                 </p>
-
-                <!-- Search Bar -->
-                <livewire:show-posts/>
-
+                
                 <div class="mt-6 flex flex-wrap gap-2 items-center">
-                    <span class="text-sm font-medium text-gray-500 mr-2">Trending:</span>
-                    <button class="text-sm bg-teal-100 text-teal-800 px-3 py-1 rounded-full hover:bg-teal-200 transition-colors">#slowliving</button>
-                    <button class="text-sm bg-teal-100 text-teal-800 px-3 py-1 rounded-full hover:bg-teal-200 transition-colors">#teatime</button>
-                    <button class="text-sm bg-teal-100 text-teal-800 px-3 py-1 rounded-full hover:bg-teal-200 transition-colors">#mindfulness</button>
+                    <span class="text-sm font-medium text-gray-500 mr-2">Recommendation:</span>
+                    @php
+                        $categories = \App\Models\Category::limit(3)->get();
+                    @endphp
+
+                    @foreach( $categories as $cat )
+                        <a href="#" class="text-sm bg-teal-100 text-teal-800 px-3 py-1 rounded-full hover:bg-teal-200">
+                            #{{ $cat->name }}
+                        </a>
+                    @endforeach
                 </div>
             </div>
             
-            <div class="relative flex flex-col items-center justify-center">
-                <div class="mb-6 px-6 py-4 bg-teal-700/10 rounded-lg text-center text-lg italic relative z-10 shadow-md">
-                    <p class="text-base-900 font-bold">
+            <div class="relative flex flex-col items-center justify-center lg:w-1/2">
+                <div class="mb-6 px-6 py-4 bg-white/80 backdrop-blur rounded-lg text-center shadow-md border border-teal-100 max-w-sm">
+                    <p class="text-gray-800 italic">
                         @if($quote)
                             "{{ $quote->content }}"
                             <br>
-                            <span class="text-sm font-normal text-teal-600">#{{ $quote->title }}</span>
+                            <span class="text-sm font-semibold text-teal-600">-{{ $quote->title }}</span>
                         @else
-                            "Belum ada kutipan hari ini."
+                            "Write your own story and inspire the world."
+                            <br>
+                            <span class="text-sm font-semibold text-teal-600">#TeaTales</span>
                         @endif
                     </p>
                 </div>
 
-                <div>
-                    <div class="border-8 border-white rounded-2xl shadow-2xl overflow-hidden">
-                        <img src="/media/ilustrasiHero.jpeg" alt="Tea" class="w-full h-auto object-cover">
-                    </div>
-                    
-                    <div class="flex items-center justify-center gap-3 bg-white rounded-2xl px-4 py-2 shadow">
-                        <div class="p-2 bg-teal-100 rounded-full flex items-center justify-center">
-                            <i class="fa-regular fa-thumbs-up"></i>
-                        </div>
-                        <div class="text-center">
-                            <p class="font-bold text-lg text-base-900 leading-tight">2.8k+</p>
-                            <p class="text-sm text-base-600 leading-none">Positive Reviews</p>
-                        </div>
+                <div class="relative">
+                    <div class="border-8 border-white rounded-2xl shadow-2xl overflow-hidden max-w-md">
+                        <img src="{{ asset('media/hero.jpg') }}" alt="Hero" class="w-full h-auto object-cover">
                     </div>
                 </div>
             </div>
         </header>
-
     </div>
 
-    <!-- ISI UTAMA -->
     <main id="community" class="bg-white py-16">
         <div class="container mx-auto px-6">
-            <!-- STATS -->
+            
             <section class="text-center mb-20">
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">Growing Community</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto mb-10">
-                    Join thousands of storytellers sharing their passion and creativity.
-                </p>
+                <h2 class="text-3xl font-bold text-gray-800 mb-4 font-['Poppins']">Growing Community</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto mb-10">Join thousands of storytellers sharing their passion and creativity.</p>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     
-                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                         <span class="text-4xl">☕</span>
-                        <h3 class="text-4xl font-bold text-teal-600 my-2">892+</h3>
+                        <h3 class="text-4xl font-bold text-teal-600 my-2">{{ $activeUsers }}</h3>
                         <p class="text-gray-700 font-semibold">Active Users</p>
-                        <p class="text-sm text-gray-500 mt-2">Sharing their stories daily.</p>
                     </div>
-                    
-                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                         <span class="text-4xl">📝</span>
-                        <h3 class="text-4xl font-bold text-teal-600 my-2">2,847</h3>
+                        <h3 class="text-4xl font-bold text-teal-600 my-2">{{ $publishedStories }}</h3>
                         <p class="text-gray-700 font-semibold">Stories Published</p>
-                        <p class="text-sm text-gray-500 mt-2">New articles published this week.</p>
                     </div>
-                    
-                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                         <span class="text-4xl">👀</span>
-                        <h3 class="text-4xl font-bold text-teal-600 my-2">15.2k+</h3>
-                        <p class="text-gray-700 font-semibold">Monthly Visitors</p>
-                        <p class="text-sm text-gray-500 mt-2">Reading and engaging.</p>
+                        <h3 class="text-4xl font-bold text-teal-600 my-2">{{ $monthlyVisitors }}</h3>
+                        <p class="text-gray-700 font-semibold">Total Visits</p>
                     </div>
+
                 </div>
 
                 <div class="mt-12 flex flex-col sm:flex-row justify-center gap-4">
-                    {{-- join our community itu masuk laman login, kalau udah login, ini ilang --}}
-                    <a href="" class="bg-teal-600 h-10 text-white px-6 py-3 rounded-full font-semibold shadow hover:bg-teal-700 transition-colors flex justify-center items-center">Join Our Community</a>
-                    {{-- explore stories ke halaman explore --}}
-                    <a href="" class="bg-orange-300 h-10 text-white px-6 py-3 rounded-full font-semibold shadow hover:bg-orange-600 transition-colors flex justify-center items-center">Explore Stories</a>
+                    @guest
+                        <a href="{{ route('register') }}" class="bg-teal-600 h-12 text-white px-8 rounded-full font-bold shadow hover:bg-teal-700 transition flex justify-center items-center">Join Our Community</a>
+                    @endguest
+                    <a href="#explore" class="bg-orange-300 h-12 text-white px-8 rounded-full font-bold shadow hover:bg-orange-400 transition flex justify-center items-center">Explore Stories</a>
                 </div>
             </section>
 
-            <!-- FEED & SIDEBAR-->
-            <section class="flex flex-col lg:flex-row gap-12">
+            <section id="explore" class="flex flex-col lg:flex-row gap-12">
                 
                 <div class="w-full lg:w-2/3">
-                    <livewire:show-posts/>
+                    <div class="flex items-center justify-between mb-8">
+                        <h3 class="text-2xl font-bold text-gray-800">Latest Stories</h3>
+                    </div>
+                    
+                    {{-- GANTI INI: Dari show-posts ke explore-stories --}}
+                    <livewire:show-posts /> 
+
                 </div>
 
-                
-                <aside class="lg:w-1/3">
-                    
-                    <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100 mb-8">
-                        <h4 class="font-bold text-gray-800 mb-5">Authors To Follow</h4>
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <a href="">
-                                    <div class="flex items-center space-x-3">
-                                        <img src="{{ Auth::user()->profile_photo }}" alt="Avatar" class="w-10 h-10 rounded-full">
-                                        <div>
-                                            <h5 class="font-semibold text-gray-700">Alexei D.</h5>
-                                            <p class="text-sm text-gray-500">@alexei</p>
-                                        </div>
-                                    </div>
-                                </a>
-                                <button class="text-sm text-teal-600 font-medium hover:text-teal-700">Follow</button>
+                <aside class="lg:w-1/3 sticky top-20">
+                        <livewire:authors-to-follow />
+
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8">
+                            <h4 class="font-bold text-gray-800 mb-4">Popular Categories</h4>
+                            <div class="flex flex-wrap gap-2">
+                                @php
+                                    $categories = \App\Models\Category::limit(6)->get();
+                                @endphp
+
+                                @foreach( $categories as $cat )
+                                    <a href="#" class="text-xs bg-gray-50 text-gray-600 px-3 py-1.5 rounded-lg border border-gray-100 hover:bg-teal-50 hover:text-teal-700 transition">
+                                        #{{ $cat->name }}
+                                    </a>
+                                @endforeach
                             </div>
+                        </div>
 
-                            <div class="flex items-center justify-between">
-                                <a href="">
-                                    <div class="flex items-center space-x-3">
-                                        <img src="{{ Auth::user()->profile_photo }}" alt="Avatar" class="w-10 h-10 rounded-full">
-                                        <div>
-                                            <h5 class="font-semibold text-gray-700">Alexei D.</h5>
-                                            <p class="text-sm text-gray-500">@alexei</p>
-                                        </div>
-                                    </div>
-                                </a>
-                                <button class="text-sm text-teal-600 font-medium hover:text-teal-700">Follow</button>
+                        <div class="bg-gradient-to-br from-orange-100 to-orange-200 p-8 rounded-2xl shadow-inner text-center">
+                            <div class="bg-white/50 w-16 h-16 rounded-full flex justify-center items-center mx-auto mb-4">
+                                <i class="fa-solid fa-mug-hot text-orange-500 text-2xl"></i>
                             </div>
+                            <h4 class="font-bold text-teal-900 text-xl mb-2">Ready to Write?</h4>
+                            <p class="text-sm text-teal-800/80 mb-6">Share your unique perspective with our warm community.</p>
+                            @auth
+                                <a href="{{ route('posts.create') }}" class="bg-orange-300 text-white font-bold px-6 py-2.5 rounded-full shadow-lg hover:bg-orange-500">Write Now</a>
+                            @else
+                                <a href="{{ route('login') }}" class="bg-orange-300 text-white font-bold px-6 py-2.5 rounded-full shadow-lg hover:bg-orange-500">Login to Write</a>
+                            @endauth
+                        </div>
 
-                            <div class="flex items-center justify-between">
-                                <a href="">
-                                    <div class="flex items-center space-x-3">
-                                        <img src="{{ Auth::user()->profile_photo }}" alt="Avatar" class="w-10 h-10 rounded-full">
-                                        <div>
-                                            <h5 class="font-semibold text-gray-700">Alexei D.</h5>
-                                            <p class="text-sm text-gray-500">@alexei</p>
-                                        </div>
+                        @auth
+                            <div class="sticky top-24 mt-8">
+                                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                                    <h4 class="font-bold text-gray-800 mb-4 flex items-center border-b pb-3 gap-3">
+                                        <i class="fas fa-file-pen text-teal-700"></i> Your Drafts
+                                    </h4>
+                                    
+                                    <div class="space-y-3">
+                                        @auth
+                                            @php
+                                                $myDrafts = Auth::user()->posts()
+                                                            ->where('status', 'draft') 
+                                                            ->latest()
+                                                            ->take(3)
+                                                            ->get();
+                                            @endphp
+
+                                            @forelse($myDrafts as $draft)
+                                                <a href="{{ route('posts.edit', $draft) }}" 
+                                                class="block text-sm text-gray-600 hover:text-teal-700 transition truncate"
+                                                title="{{ $draft->title }}">
+                                                    {{ $draft->title }}
+                                                </a>
+                                            @empty
+                                                <span class="text-sm text-gray-400 italic">You have no drafts yet.</span>
+                                            @endforelse
+
+                                            <a href="{{ route('profile.show', Auth::user()->username) }}?tab=drafts" 
+                                            class="block w-full text-left text-xs font-bold text-teal-600 mt-4 hover:underline">
+                                            View All Drafts
+                                            </a>
+                                        @else
+                                            <p class="text-sm text-gray-500">Please login to see your drafts.</p>
+                                        @endauth
                                     </div>
-                                </a>
-                                <button class="text-sm text-teal-600 font-medium hover:text-teal-700">Follow</button>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100 mb-8">
-                        <h4 class="font-bold text-gray-800 mb-4">Popular Categories</h4>
-                        <div class="flex flex-wrap gap-2">
-                            <a href="#" class="text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded-full hover:bg-gray-200">Lifestyle</a>
-                            <a href="#" class="text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded-full hover:bg-gray-200">Tea</a>
-                            <a href="#" class="text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded-full hover:bg-gray-200">Journey</a>
-                            <a href="#" class="text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded-full hover:bg-gray-200">Wellness</a>
-                            <a href="#" class="text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded-full hover:bg-gray-200">Recipes</a>
-                            <a href="#" class="text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded-full hover:bg-gray-200">Mindfulness</a>
-                        </div>
-                    </div>
-
-                    <div class="bg-orange-100 text-white p-8 rounded-2xl shadow-lg text-center">
-                        <div class="bg-orange-300 h-20 w-20 rounded-full flex justify-center items-center mx-auto mb-4">
-                            <i class="fa-solid fa-book text-white text-3xl"></i>
-                        </div>
-                        
-                        <h4 class="font-bold text-teal-900 text-xl mb-2">Let's Explore</h4>
-                        <p class="text-sm text-teal-800 mb-6">
-                            Reading more stories, and enjoy it with a cup of tea!
-                        </p>
-                        <a href="" class="bg-white text-teal-700 font-semibold px-6 py-2 rounded-full shadow hover:bg-gray-100 transition-colors">
-                            Start Reading
-                        </a>
-                    </div>
-
-                    <div class="sticky top-20">
-                        <a href="">
-                            <div class="bg-white p-6 rounded-xl shadow-xl border border-gray-200 mt-8">
-                                <h4 class="font-bold text-lg text-gray-800 mb-4 flex items-center border-b pb-3">
-                                    <i class="fas fa-edit text-teal-900 pr-6"></i>
-                                    Your Draft
-                                </h4>
-
-                                <div class="flex flex-wrap gap-3">
-                                    <a href="#" class="text-sm text-gray-600 font-medium px-4 py-2 rounded-lg hover:text-gray-800 transition duration-150 truncate max-w-full">How To Cook Apple Pie..</a>
-                                    <a href="#" class="text-sm text-gray-600 font-medium px-4 py-2 rounded-lg hover:text-gray-800 transition duration-150 truncate max-w-full">Let's We Talk About...</a>
-                                    <a href="#" class="text-sm text-gray-600 font-medium px-4 py-2 rounded-lg hover:text-gray-800 transition duration-150 truncate max-w-full">What's The Popular Place...</a>
-                                    <a href="#" class="text-sm text-gray-600 font-medium px-4 py-2 rounded-lg hover:text-gray-800 transition duration-150 truncate max-w-full">You Can Feel Relax With...</a>
                                 </div>
                             </div>
-                        </a>
-                        
-                    </div>
+                        @endauth
                 </aside>
             </section>
         </div>
     </main>
 
-    <!-- FOOTER -->
-    <footer id="about" class="bg-teal-950 text-white mt-16 py-16">
-        <div class="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
+    <footer id="about" class="bg-teal-950 text-white py-16">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
             <div>
-                <h5 class="text-xl font-bold text-white mb-4"><span class="text-teal-700">☕︎ </span>TeaTales+</h5>
-                <p class="text-sm">Sharing stories, one cup at a time.</p>
+                <h5 class="text-xl font-bold mb-4"><span class="text-teal-500">☕︎ </span>TeaTales+</h5>
+                <p class="text-gray-400 text-sm leading-relaxed">Sharing stories, one cup at a time. A community for those who find beauty in the small things.</p>
             </div>
-            
             <div>
-                <h6 class="font-bold text-orange-300 mb-3 uppercase text-sm">Quick Menu</h6>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="#home" class="hover:text-teal-600 font-medium">Home</a></li>
-                    <li><a href="#community" class="hover:text-teal-600">Community</a></li>
-                    <li><a href="#explore" class="hover:text-teal-600">Explore</a></li>
-                    <li><a href="#about" class="hover:text-teal-600">About</a></li>
+                <h6 class="font-bold text-orange-300 mb-4 uppercase text-xs tracking-widest">Navigation</h6>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li><a href="#home" class="hover:text-white transition">Home</a></li>
+                    <li><a href="#community" class="hover:text-white transition">Community</a></li>
+                    <li><a href="#explore" class="hover:text-white transition">Explore</a></li>
                 </ul>
             </div>
-            
             <div>
-                <h6 class="font-bold text-orange-300 mb-3 uppercase text-sm">Support</h6>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="#" class="hover:text-white">FAQ</a></li>
-                    <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
-                    <li><a href="#" class="hover:text-white">Help Service</a></li>
+                <h6 class="font-bold text-orange-300 mb-4 uppercase text-xs tracking-widest">Contact</h6>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li class="hover:text-white transition">+62 8123456789</li>
+                    <li class="hover:text-white transition">teatales@gmail.com</li>
                 </ul>
             </div>
-            
             <div>
-                <h6 class="font-bold text-orange-300 mb-3 uppercase text-sm">Connect With Us</h6>
-                <div class="flex space-x-4">
-                    <a href="#" class="hover:text-white"><i class="fa-brands fa-facebook"></i></a>
-                    <a href="#" class="hover:text-white"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" class="hover:text-white"><i class="fa-brands fa-x-twitter"></i></a>
+                <h6 class="font-bold text-orange-300 mb-4 uppercase text-xs tracking-widest">Connect</h6>
+                <div class="flex space-x-4 text-xl">
+                    <a href="https://www.instagram.com/zwoify" class="text-gray-400 hover:text-white transition"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="https://www.instagram.com/zwoify" class="text-gray-400 hover:text-white transition"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://www.instagram.com/zwoify" class="text-gray-400 hover:text-white transition"><i class="fa-brands fa-x-twitter"></i></a>
                 </div>
             </div>
-
         </div>
-        
-        <div class="container mx-auto px-6 text-center text-sm border-t border-teal-900 pt-8 mt-12">
-            &copy; 2025 TeaTales+.
+        <div class="container mx-auto px-6 text-center text-xs text-gray-500 border-t border-white/5 pt-8 mt-12">
+            &copy; 2025 TeaTales+. All rights reserved.
         </div>
     </footer>
+
+    @if (session('blocked_message'))
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Akses Ditolak',
+                text: "{{ session('blocked_message') }}",
+                confirmButtonColor: '#115e59',
+            });
+        </script>
+    @endif
+
     @livewireScripts
-</body>
-</html>
+</x-app-layout>

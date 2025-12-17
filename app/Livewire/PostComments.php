@@ -34,6 +34,10 @@ class PostComments extends Component
             'content' => $this->content,
         ]);
 
+        $this->dispatch('commentPosted');
+
+        $this->content = '';
+
         $this->content = '';
         session()->flash('message', 'Comment posted!');
         

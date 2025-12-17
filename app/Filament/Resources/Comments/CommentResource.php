@@ -9,8 +9,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-
-// Import komponen agar kode lebih bersih
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
@@ -20,10 +18,8 @@ class CommentResource extends Resource
 {
     protected static ?string $model = Comment::class;
 
-    // PERBAIKAN: Gunakan string untuk ikon
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
 
-    // Opsional: Masukkan ke grup 'Manajemen Konten' agar rapi di sidebar
     protected static ?string $navigationGroup = 'Manajemen Konten';
 
     public static function form(Form $form): Form
@@ -32,7 +28,7 @@ class CommentResource extends Resource
             ->schema([
                 Section::make('Detail Komentar')->schema([
                     
-                    // Pilih Postingan mana yang dikomentari
+                    // postingan mana yang dikomentari
                     Select::make('post_id')
                         ->relationship('post', 'title')
                         ->searchable()
@@ -40,7 +36,7 @@ class CommentResource extends Resource
                         ->required()
                         ->label('Postingan'),
 
-                    // Pilih User siapa yang berkomentar
+                    // user siapa yang ksh komen
                     Select::make('user_id')
                         ->relationship('user', 'name')
                         ->searchable()
@@ -48,7 +44,7 @@ class CommentResource extends Resource
                         ->required()
                         ->label('Pengguna'),
 
-                    // Isi Komentar
+                    // Iisi Komentar
                     Textarea::make('content')
                         ->label('Isi Komentar')
                         ->required()
@@ -107,7 +103,6 @@ class CommentResource extends Resource
 
     public static function getPages(): array
     {
-        // Pastikan folder Pages/ListComments.php, dll sudah ada
         return [
             'index' => Pages\ListComments::route('/'),
             'create' => Pages\CreateComment::route('/create'),

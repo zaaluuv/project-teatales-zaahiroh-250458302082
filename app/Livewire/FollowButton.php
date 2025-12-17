@@ -9,14 +9,13 @@ use Illuminate\Support\Facades\Auth;
 class FollowButton extends Component
 {
     public User $author;
-    public $isFollowing = false;
+    public bool $isFollowing = false;
 
     public function mount(User $author)
     {
         $this->author = $author;
 
         if (Auth::check()) {
-            
             /** @var User $user */
             $user = Auth::user();
             
@@ -40,6 +39,10 @@ class FollowButton extends Component
         $user->following()->toggle($this->author->id);
 
         $this->isFollowing = !$this->isFollowing;
+        
+        $this->dispatch('follower-updated'); 
+
+        $this->js('window.location.reload()');
     }
 
     public function render()

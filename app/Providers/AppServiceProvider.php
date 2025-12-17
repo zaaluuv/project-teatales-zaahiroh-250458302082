@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
-use Illuminate\Support\Facades\Auth;
+use Filament\Http\Responses\Auth\Contracts\LogoutResponse;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(LogoutResponse::class, function () {
+            return new class implements LogoutResponse {
+                public function toResponse($request)
+                {
+                    return redirect('/');
+                }
+            };
+        });
     }
 
     /**
@@ -21,11 +30,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Paginator::useTailwind(); 
+
         RedirectIfAuthenticated::redirectUsing(function () {
             $user = Auth::user();
 
             if ($user && $user->role === 'admin') {
-                return route('filament.admin.pages.dashboard');
+                return url('/');
             }
 
             return '/';
